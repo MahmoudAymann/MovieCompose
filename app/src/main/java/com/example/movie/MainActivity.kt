@@ -1,11 +1,11 @@
 package com.example.movie
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -26,10 +26,17 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Greeting {
-                Toast.makeText(this, "hiiii", Toast.LENGTH_SHORT).show()
-            }
+
         }
+    }
+}
+
+data class Profile(val name: String, val age: String)
+
+@Composable
+fun Lists() {
+    LazyColumn{
+        messages.map { item { MessageCard(it) } }
     }
 }
 
@@ -75,30 +82,6 @@ fun Greeting(callBack: () -> Unit = {}) {
         }
     }
 }
-
-
-/*Column(
-    modifier = Modifier
-        .verticalScroll(rememberScrollState())
-        .fillMaxSize()
-) {
-    Image(
-        painter = painterResource(id = R.drawable.burger_image),
-        contentDescription = "burger image",
-        modifier = Modifier
-            .height(100.dp)
-            .fillMaxWidth()
-    )
-    Column(modifier = Modifier
-        .padding(16.dp)
-        .fillMaxWidth()) {
-        Text(text = "Meat berger", style = TextStyle(fontWeight = FontWeight.Bold))
-        Spacer(modifier = Modifier.padding(top = 10.dp))
-        Text(text = "2 Pieces of meat")
-        Spacer(modifier = Modifier.padding(top = 10.dp))
-        Text(text = "20$")
-    }
-}}*/
 
 @Preview(showBackground = true)
 @Composable
