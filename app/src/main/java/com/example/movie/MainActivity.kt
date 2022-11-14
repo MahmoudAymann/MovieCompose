@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -21,22 +20,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.movie.ui.theme.MovieComposeTheme
 
+data class Profile(val name: String, val age: String)
+
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-
+            MessageCard(name = "Mahmoud")
         }
-    }
-}
-
-data class Profile(val name: String, val age: String)
-
-@Composable
-fun Lists() {
-    LazyColumn{
-        messages.map { item { MessageCard(it) } }
     }
 }
 
@@ -83,10 +75,15 @@ fun Greeting(callBack: () -> Unit = {}) {
     }
 }
 
+@Composable
+fun MessageCard(name: String) {
+    Text(text = "Hellow $name")
+}
+
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     MovieComposeTheme {
-        Greeting()
+        MessageCard("Android")
     }
 }
