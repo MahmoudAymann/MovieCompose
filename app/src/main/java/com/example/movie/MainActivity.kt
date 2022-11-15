@@ -6,13 +6,16 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,8 +30,34 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MessageCard(name = "Mahmoud")
+            //MessageCard(Message(author = "", body = ""))
         }
+    }
+}
+
+data class Message(val author: String, val body: String)
+
+@Composable
+fun MessageCard(msg: Message) {
+    Row(modifier = Modifier.padding(8.dp)) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_nuclear),
+            contentDescription = "", modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape), contentScale = ContentScale.FillBounds
+        )
+        Column {
+            Text(text = "Hellowjsk ${msg.author}")
+            Text(text = msg.body)
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview() {
+    MovieComposeTheme {
+        MessageCard(Message(author = "Mado", body = "asdasdas"))
     }
 }
 
@@ -72,18 +101,5 @@ fun Greeting(callBack: () -> Unit = {}) {
                 Text(text = "Order Now")
             }
         }
-    }
-}
-
-@Composable
-fun MessageCard(name: String) {
-    Text(text = "Hellow $name")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    MovieComposeTheme {
-        MessageCard("Android")
     }
 }
