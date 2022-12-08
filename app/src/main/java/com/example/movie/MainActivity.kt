@@ -3,14 +3,15 @@ package com.example.movie
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,32 +24,58 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.movie.ui.theme.MovieComposeTheme
 
-data class Profile(val name: String, val age: String)
 
+@Composable
+fun Conversation(messages: List<Message>) {
+    LazyColumn {
+        messages.map { item { MessageCard(it) } }
+    }
+}
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            //MessageCard(Message(author = "", body = ""))
+            MovieComposeTheme {
+                Surface {
+                    Conversation(SampleData.conversationSample)
+                }
+            }
         }
     }
 }
 
-data class Message(val author: String, val body: String)
 
 @Composable
 fun MessageCard(msg: Message) {
-    Row(modifier = Modifier.padding(8.dp)) {
+    Row(modifier = Modifier.padding(16.dp).fillMaxWidth()) {
         Image(
             painter = painterResource(id = R.drawable.ic_nuclear),
-            contentDescription = "", modifier = Modifier
+            contentDescription = "",
+            Modifier
+                .padding(end = 8.dp)
                 .size(40.dp)
-                .clip(CircleShape), contentScale = ContentScale.FillBounds
+                .border(
+                    width = 1.5.dp,
+                    color = MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(12.dp)
+                )
+                .clip(RoundedCornerShape(12.dp)),
+            contentScale = ContentScale.FillBounds
         )
-        Column {
-            Text(text = "Hellowjsk ${msg.author}")
-            Text(text = msg.body)
+        // We keep track if the message is expanded or not in this
+        // variable
+        var isExpanded by remember { mutableStateOf(false) }
+
+        Column(modifier = Modifier.clickable { isExpanded = !isExpanded }.fillMaxWidth()) {
+            Text(text = msg.author)
+            Surface(shape = MaterialTheme.shapes.medium, shadowElevation = 1.5.dp) {
+                Text(
+                    text = msg.body, style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                    maxLines = if(isExpanded) Int.MAX_VALUE else 1
+                )
+            }
         }
     }
 }
@@ -57,7 +84,9 @@ fun MessageCard(msg: Message) {
 @Composable
 fun DefaultPreview() {
     MovieComposeTheme {
-        MessageCard(Message(author = "Mado", body = "asdasdas"))
+        Surface {
+            Conversation(messages = SampleData.conversationSample)
+        }
     }
 }
 
