@@ -3,14 +3,15 @@ package com.example.movie
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,7 +49,11 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MessageCard(msg: Message) {
-    Row(modifier = Modifier.padding(16.dp).fillMaxWidth()) {
+    Row(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth()
+    ) {
         Image(
             painter = painterResource(id = R.drawable.ic_nuclear),
             contentDescription = "",
@@ -67,13 +72,15 @@ fun MessageCard(msg: Message) {
         // variable
         var isExpanded by remember { mutableStateOf(false) }
 
-        Column(modifier = Modifier.clickable { isExpanded = !isExpanded }.fillMaxWidth()) {
+        Column(modifier = Modifier
+            .clickable { isExpanded = !isExpanded }
+            .fillMaxWidth()) {
             Text(text = msg.author)
             Surface(shape = MaterialTheme.shapes.medium, shadowElevation = 1.5.dp) {
                 Text(
                     text = msg.body, style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                    maxLines = if(isExpanded) Int.MAX_VALUE else 1
+                    maxLines = if (isExpanded) Int.MAX_VALUE else 1
                 )
             }
         }
@@ -84,11 +91,59 @@ fun MessageCard(msg: Message) {
 @Composable
 fun DefaultPreview() {
     MovieComposeTheme {
-        Surface {
-            Conversation(messages = SampleData.conversationSample)
+        TopicsList(
+            topics = listOf(
+                TopicModel(
+                    image = R.drawable.ic_nuclear,
+                    name = "Name1", details = "45"
+                ),
+                TopicModel(
+                    image = R.drawable.burger_image,
+                    name = "Name2", details = "45"
+                ),
+                TopicModel(
+                    image = R.drawable.ic_nuclear,
+                    name = "Name3", details = "45"
+                ),
+                TopicModel(
+                    image = R.drawable.burger_image,
+                    name = "Name4", details = "45"
+                ),
+                TopicModel(
+                    image = R.drawable.ic_nuclear,
+                    name = "Name5", details = "45"
+                ),
+            )
+        )
+    }
+}
+
+data class TopicModel(val image: Int, val name: String, val details: String)
+
+@Composable
+fun TopicShape(topicModel: TopicModel, selected: Boolean = false) {
+    val radius by animateDpAsState(targetValue = if (selected) 20.dp else 0.dp)
+    Card(shape = RoundedCornerShape(topStart = radius), modifier = Modifier.padding(8.dp)) {
+        Row {
+            Box {
+                Image(painter = painterResource(id = topicModel.image), contentDescription = "")
+                if (selected)
+                    Icon(imageVector = Icons.Filled.Done, contentDescription = "")
+            }
+            Text(text = topicModel.name, modifier = Modifier.padding(16.dp))
         }
     }
 }
+
+@Composable
+fun TopicsList(topics: List<TopicModel>) {
+    LazyColumn(modifier = Modifier.fillMaxWidth()) {
+        items(topics) { topic ->
+            TopicShape(topicModel = topic)
+        }
+    }
+}
+
 
 @Composable
 fun Greeting(callBack: () -> Unit = {}) {
